@@ -1,0 +1,17 @@
+>> For the theorical method
+> extract features using glcm - OK
+> select, randomly, a equal number of disease and healthy superpixels and label them
+> use Seeded-Fuzzy C-Means to data augmentation, using a high threshold
+> With the new classified superpixels, train a Random Forest model to classify the other unclassified superpixels
+> Calculate and select the biggest connected component
+> Use an active contour algorithm to close the borders of the biggest component
+> Calculate the metrics (accuracy, sensibility, specificity, dice, and some others)
+
+
+>> For the app
+> Find some way to show a circular measure to fit the eye in
+> Find some way to represent clickables superpixels
+> Ask the user to select some superpixels related to disease and healthy areas
+> Ask the user if he want to select some superpixel to ignore in the procedure (like light points or the black circle in the eye)
+> Send to the server the informations
+> Receive the data and calculate matrics like circularity, percentage of disease area, etc
