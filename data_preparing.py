@@ -1,9 +1,26 @@
+# <b>data_preparing</b>: Classe responsável somente por receber um array contendo os superpixels e extrai as caracteristicas
+# necessárias para a classificação.
+# 
+# author:
+# Pablo Vinicius - https://github.com/pabloVinicius
+#
+# contributors:
+# Filipe A. Sampaio - https://github.com/filipeas
+
+#imports necessários
 from skimage.feature import greycomatrix, greycoprops
 from skimage.color import rgb2gray
 from skimage import img_as_ubyte
 from skimage.measure import shannon_entropy
 import numpy as np
 
+"""
+<b>extract_features</b>: Extrai as caracteristicas (features) de cada superpixel.
+@ params:
+array -> imagem com superpixels
+@ returns:
+props_array -> array de caracteristicas (contrast, energy, homogeneity, correlation)
+"""
 def extract_features(array):
     props_array = []
     angles = [0, np.pi/4, np.pi/2, 3*np.pi/4]

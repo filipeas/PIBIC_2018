@@ -1,19 +1,34 @@
-#esse script contém as funções de classificação do modelo
-#em geral, é utilizada a função classify(), que classifica e realiza o pós processamento para depois calcular as métricas
-#ao final do processo, ela retorna 4 métricas: acurácia, sensibilidade, especificidade e medida Dice
+# <b>select_and_classify</b>: Esse script contém as funções de classificação do modelo.
+# Em geral, é utilizada a função classify(), que classifica e realiza o pós-processamento
+# para depois calcular as métricas. Ao final do processo, ela retorna 4 métricas:
+# acurácia, sensibilidade, especificidade e medida Dice.
 
+# 
+# author:
+# Pablo Vinicius - https://github.com/pabloVinicius
+#
+# contributors:
+# Filipe A. Sampaio - https://github.com/filipeas
 import numpy as np
 from random import shuffle
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
-from SFc_means import *
-from utils import *
+from SFc_means import * # classe responsável por implementar o algoritmo proposto, SFc-means
+from utils import * # classe responsável por guardar funções gerais
 from skimage.io import imread, imsave, imshow, show
 from skimage import img_as_ubyte
 from sklearn.metrics import accuracy_score
 from scipy.ndimage.morphology import binary_fill_holes
 from skimage.measure import label, find_contours
 
+"""
+<b>read_features_file</b>: Função responsável por realizar leitura do arquivo numpy que contém todas as caracteristicas
+que serão utilizadas na classificação.
+@ params:
+
+@ returns: 
+retorna todas as caracteristicas
+"""
 def read_features_file():
     sp_file = open('saved_data/superpixels.npz', 'rb')
     sp_data = np.load(sp_file)
@@ -22,9 +37,19 @@ def read_features_file():
     #ft_file.close()
     return np_file['healthy'], np_file['disease'], sp_data['ht_superpixels'], sp_data['ds_superpixels'], sp_data['segments']
 
+"""
+<b></b>:
+@ params:
+@ returns: 
+"""
 def split_classes(array, group):
     return [(group, i) for i in array]
 
+"""
+<b></b>:
+@ params:
+@ returns: 
+"""
 def select_random_seeds(percentage=0.3):
     ht, ds, ht_sp, ds_sp, segments = read_features_file()
     #ht_cls = [(1, i) for i in ht] #healthy features with classes
@@ -50,10 +75,17 @@ def select_random_seeds(percentage=0.3):
     total_grouping = 0
 
     result = SFc_means(attr_vector, k, seeds, seeds_classes, centroids, threshold, z, total_grouping)
-    print(result)
+    return result
     #full_sp = np.concatenate((ht_sp, ds_sp))
     #create_result_image(segments, list(zip(full_sp, result)))
 
+"""
+<b>classify</b>: Usa as características extraídas na etapa anterior para classificar e gerar as métricas para cada imagem.
+@ params:
+percentage -> porcentagem de treino;
+@ returns: 
+retorna todas as medidas (acuracia, sensibilidade, especificidade e dice);
+"""
 def classify(percentage=0.25):
     healthy_props, disease_props, healthy_sp, disease_sp, segments = read_features_file()
     healthy_indexes = [i for i in range(0, len(healthy_props))]
@@ -100,7 +132,12 @@ def classify(percentage=0.25):
     #create_result_image(segments, list(zip(full_sp, result_healthy)), 'train_image')
     tcc_train_image(segments, list(zip(full_sp, result_healthy)), 'train_image')
     """ 
-    clf = RandomForestClassifier(n_estimators=30)
+    """sfcmeans = select_random_seeds(percentage) # usando SFc-means
+
+    print(sfcmeans)
+    exit()"""
+
+    clf = RandomForestClassifier(n_estimators=30) # usando Random Forest
     clf.fit(train_set_data, train_ground_truth)
 
     result_healthy_test = []
@@ -124,7 +161,8 @@ def classify(percentage=0.25):
         result_healthy[i] = 1
     for i in disease_train_set_index:
         result_disease[i] = 2
-    
+
+
     marks_file = open('saved_data/marked_areas.npz', 'rb')
     marks_data = np.load(marks_file)
     healthy_mark = marks_data['healthy']
@@ -192,6 +230,11 @@ def classify(percentage=0.25):
     print('Disease indexes', disease_indexes)
     """
 
+"""
+<b></b>:
+@ params:
+@ returns: 
+"""
 def calculate_confusion_matrix(true_disease, predict_disease, true_healthy, predict_healthy):
     tp = 0
     tn = 0
@@ -215,10 +258,20 @@ def calculate_confusion_matrix(true_disease, predict_disease, true_healthy, pred
     
     return tp, tn, fp, fn
 
+"""
+<b></b>:
+@ params:
+@ returns: 
+"""
 def calculate_dice(true_disease, predict_disease):
     dice = np.sum(predict_disease[true_disease]*2.0 /(np.sum(predict_disease) + np.sum(true_disease)))
     return dice
 
+"""
+<b></b>:
+@ params:
+@ returns: 
+"""
 def image_pos_processing(result_image):
     shape = result_image.shape
     labels = label(result_image) #get the image componentes labels 

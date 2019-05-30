@@ -1,10 +1,27 @@
-#funcções utilizadas por outros scripts no decorrer da execução do modelo
+#<b>utils</b>: Funções utilizadas por outros scripts no decorrer da execução do modelo.
+# 
+# author:
+# Pablo Vinicius - https://github.com/pabloVinicius
+#
+# contributors:
+# Filipe A. Sampaio - https://github.com/filipeas
 
+# imports necessários
 import numpy as np
 from scipy.ndimage.morphology import binary_fill_holes
 from skimage.io import imshow, show, imsave, imread
 from skimage import img_as_ubyte
 
+
+"""
+<b>image_color_segmentation</b>: Função responsável por segmentar as áreas doentes e saudáveis com base na marcação do médico
+
+@ params:
+img -> imagem para segmentação
+@ returns:
+healthy_mask -> máscara da imagem da parte saudável
+disease_mask -> máscara da imagem da parte lesionada
+"""
 def image_color_segmentation(img):
     shape = img.shape
     
@@ -25,6 +42,17 @@ def image_color_segmentation(img):
 
     return healthy_mask, disease_mask
 
+"""
+<b>select_superpixels</b>: Função responsável por receber a imagem e as áreas (doentes e saudáveis),
+e retorna quais superpixels estão em áreas doentes e quais estão em áreas saudáveis.
+@ params:
+segments -> imagem com os superpixels
+healthy_mask -> máscara com a parte saudável
+disease_mask -> máscara com a parte lesionada
+@ returns:
+final_ht_segments -> segmento indicando quais superpixels estão saudáveis
+final_ds_segments -> segmento indicando quais superpixels estão lesionados
+"""
 def select_superpixels(segments, healthy_mask, disease_mask):
     shape = segments.shape
 

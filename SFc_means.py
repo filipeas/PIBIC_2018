@@ -1,3 +1,11 @@
+# 
+# author:
+# Pablo Vinicius - https://github.com/pabloVinicius
+#
+# contributors:
+# Filipe A. Sampaio - https://github.com/filipeas
+
+# imports necessários
 import numpy as np
 from scipy.spatial.distance import euclidean as ed
 import math as mt
