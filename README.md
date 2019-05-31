@@ -27,6 +27,11 @@ Atualizações realizadas
 * No arquivo [features_extraction.py] a função de load do numpy recebeu uma atualização de parâmetro na versão 1.16.4;
 
 ---
+Novas implementações:
+---
+* Implementação do algoritmo SFC-means;
+
+---
 Como instalar?
 ---
 
