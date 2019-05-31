@@ -2,6 +2,16 @@ TCC_MAIN_METHOD
 =====
 
 ---
+Autor:
+---
+* [Pablo Vinicius](https://github.com/pabloVinicius)
+
+---
+Contribuintes:
+---
+* [Filipe A. Sampaio](https://github.com/filipeas)
+
+---
 Pacotes utilizados
 ---
 
@@ -10,6 +20,11 @@ Pacotes utilizados
 * [Numpy](https://docs.scipy.org/doc/numpy-1.13.0/reference/)
 * [Scipy](https://www.scipy.org/)
 * [Conda (opcional)](https://conda.io/en/latest/)
+
+---
+Atualizações realizadas
+---
+* No arquivo [features_extraction.py] a função de load do numpy recebeu uma atualização de parâmetro na versão 1.16.4;
 
 ---
 Como instalar?
