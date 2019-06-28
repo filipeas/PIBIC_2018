@@ -6,7 +6,10 @@
 # É nele que são lidas as imagens e estas são passadas para as demais etapadas do algoritmo
 # Ao término no processo, ele gera arquivos .csv (tabelas) com os resultados individuais de cada imagem
 # e a média geral de todas as execuções.
+#
+# Explicando resumidamente o código:
 # 
+#
 # author:
 # Pablo Vinicius - https://github.com/pabloVinicius
 #
