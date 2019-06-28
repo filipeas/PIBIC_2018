@@ -46,7 +46,7 @@ def split_classes(array, group):
     return [(group, i) for i in array]
 
 """
-<b></b>:
+<b>select_random_seeds</b>: Função responsável por chamar o classificador sfc-means
 @ params:
 @ returns: 
 """
@@ -167,11 +167,12 @@ def classify(percentage=0.25):
     marks_data = np.load(marks_file)
     healthy_mark = marks_data['healthy']
     disease_mark = marks_data['disease']
-    """
+    
+    # cria imagem do treinamento resultante
     result_healthy.extend(result_disease)
     full_sp = np.concatenate((healthy_sp, disease_sp))
     create_result_image(segments, list(zip(full_sp, result_healthy)), 'tcc_result')
-    """
+    
     result_healthy_mask = mask_result_image(segments, list(zip(healthy_sp, result_healthy)), 1)
     result_disease_mask = mask_result_image(segments, list(zip(disease_sp, result_disease)), 2)
     pos_processed = image_pos_processing(result_disease_mask)

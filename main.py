@@ -17,7 +17,7 @@ import sys, time, multiprocessing as mp
 import numpy as np
 
 # A função recebe o caminho da imagem original e da imagem marcada:
-def vsf(path, path_marked):
+def vsf(path, path_marked, segment):
 
     # Lendo as imagens
     img_original = img_as_ubyte(imread(path))
@@ -25,7 +25,7 @@ def vsf(path, path_marked):
 
     # Calculando os superpixels utilizando o slic da biblioteca skimage. (O pablo colocou 1500 segmentos da imagem)
     # (sugestão de melhoria: mexer na compactação dos superpixels e no sigma da imagem)
-    segments = slic(img_original, n_segments = 1500)
+    segments = slic(img_original, n_segments = segment)
 
     # Salva a imagem dos superpixels na pasta de dados salvos
     imsave('saved_data/superpixels.png', mark_boundaries(img_original, segments))
