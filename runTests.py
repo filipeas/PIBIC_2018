@@ -19,7 +19,7 @@
 # imports dos arquivos necessários
 from main import vsf # responsável pela separação dos superpixels
 from features_extraction import ftet # responsável por extrair as caracteristicas de cada superpixel usadas no modelo
-from select_and_classify import classify # responsável pela classificação do modelo criado
+from select_and_classify import classify, select_random_seeds # responsável pela classificação do modelo criado
 from statistics import mean, pvariance
 import os, csv, time
 import numpy as np
@@ -126,8 +126,9 @@ for image in dataset:
 
                 # Terceira etapa do algoritmo:
                 # Usa as características extraídas na etapa anterior para classificar e gerar as métricas para cada imagem
-                # Disponível no arquivo select_and_classify.py (alteração por Filipe A.S: classificar usando SFc-means).
-                acc, sen, spe, dice = classify(percent)
+                # Disponível no arquivo select_and_classify.py
+                # acc, sen, spe, dice = classify(percent) # classificação por Random Forest
+                acc, sen, spe, dice = select_random_seeds(percent) # classificação por sfc-means
 
                 # Coloca as métricas na estrutura de dados
                 metrics_media[0].append(acc)

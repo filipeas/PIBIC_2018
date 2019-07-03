@@ -55,6 +55,10 @@ def select_random_seeds(percentage=0.3):
     #ht_cls = [(1, i) for i in ht] #healthy features with classes
     #ds_cls = [(2, i) for i in ds] #disease features with classes
 
+    # preparando para cortar o resultado do vetor retornado do SFC-means
+    tamanho_ht = len(ht)
+    tamanh_ds = len(ds)
+
     minimun = min(len(ht), len(ds))
     absolute_limiar = round(minimun * percentage)
 
@@ -75,7 +79,32 @@ def select_random_seeds(percentage=0.3):
     total_grouping = 0
 
     result = SFc_means(attr_vector, k, seeds, seeds_classes, centroids, threshold, z, total_grouping)
-    return result
+
+    # cortando a parte saudável
+    ht_corte = result[0:tamanho_ht]
+    ds_corte = result[tamanho_ht:]
+
+    marks_file = open('saved_data/marked_areas.npz', 'rb')
+    marks_data = np.load(marks_file)
+    healthy_mark = marks_data['healthy']
+    disease_mark = marks_data['disease']
+    
+    # cria imagem do treinamento resultante
+    full_sp = np.concatenate((ht_sp, ds_sp))
+    create_result_image(segments, list(zip(full_sp, result)), 'tcc_result')
+
+    result_healthy_mask = mask_result_image(segments, list(zip(ht_sp, ht_corte)), 1)
+    result_disease_mask = mask_result_image(segments, list(zip(ds_sp, ds_corte)), 2)
+    pos_processed = image_pos_processing(result_disease_mask)
+    #imsave('saved_data/result/pos_processed_mask.png', img_as_ubyte(pos_processed))
+
+    tp, tn, fp, fn = calculate_confusion_matrix(disease_mark, pos_processed, healthy_mark, result_healthy_mask)
+    dice = calculate_dice(disease_mark, pos_processed)
+    accuracy = (tp + tn) / (tp + fp + tn + fp)
+    sensibility = (tp) / (tp + fn)
+    specificity = (tn) / (tn + fp)
+
+    return accuracy, sensibility, specificity, dice
     #full_sp = np.concatenate((ht_sp, ds_sp))
     #create_result_image(segments, list(zip(full_sp, result)))
 
@@ -132,12 +161,13 @@ def classify(percentage=0.25):
     #create_result_image(segments, list(zip(full_sp, result_healthy)), 'train_image')
     tcc_train_image(segments, list(zip(full_sp, result_healthy)), 'train_image')
     """ 
-    """sfcmeans = select_random_seeds(percentage) # usando SFc-means
+    # sfcmeans = select_random_seeds(percentage) # usando SFc-means
 
-    print(sfcmeans)
-    exit()"""
+    # print("teste com sfcmeans")
+    # print(sfcmeans)
 
     clf = RandomForestClassifier(n_estimators=30) # usando Random Forest
+    
     clf.fit(train_set_data, train_ground_truth)
 
     result_healthy_test = []
@@ -162,6 +192,11 @@ def classify(percentage=0.25):
     for i in disease_train_set_index:
         result_disease[i] = 2
 
+    # testes
+    # print("matriz result_healthy")
+    # print(result_healthy)
+    # print("matriz result_disease")
+    # print(result_disease)
 
     marks_file = open('saved_data/marked_areas.npz', 'rb')
     marks_data = np.load(marks_file)
@@ -311,4 +346,5 @@ def image_pos_processing(result_image):
     return output
 
 if __name__ == '__main__':
-    classify()
+    classify() # o original do trabalho do pablo era classify().
+    # select_random_seeds() # Esse trabalho realiza a classificacao usando o sfc-means
