@@ -80,6 +80,12 @@ def select_random_seeds(percentage=0.3):
 
     result = SFc_means(attr_vector, k, seeds, seeds_classes, centroids, threshold, z, total_grouping)
 
+    # substituindo zeros da imagem(acredito que quando o sfc-means retorna o vetor, ele tras as caracteristicas de 3 grupos diferentes: saudáveis, não saudáveis e aleatório. assim o vetor result acaba obtendo valores 0, 1 e 2, onde o valor 0 atrapalha no calculo)
+    # a outra possibilidade é que o vetor é inicializado com zeros, como ocorre na classe SFc_menas.py, só que alguns zeros não são substituido
+    for i in range(len(result)):
+        if result[i] == 0:
+            result[i] = 1
+
     # cortando a parte saudável
     ht_corte = result[0:tamanho_ht]
     ds_corte = result[tamanho_ht:]
@@ -205,6 +211,7 @@ def classify(percentage=0.25):
     
     # cria imagem do treinamento resultante
     result_healthy.extend(result_disease)
+
     full_sp = np.concatenate((healthy_sp, disease_sp))
     create_result_image(segments, list(zip(full_sp, result_healthy)), 'tcc_result')
     
@@ -345,6 +352,6 @@ def image_pos_processing(result_image):
 
     return output
 
-if __name__ == '__main__':
-    classify() # o original do trabalho do pablo era classify().
+#if __name__ == '__main__':
+   # classify() # o original do trabalho do pablo era classify().
     # select_random_seeds() # Esse trabalho realiza a classificacao usando o sfc-means
