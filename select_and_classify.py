@@ -76,15 +76,15 @@ def select_random_seeds(percentage=0.3):
     
     threshold = 0.1
     z = 2
-    total_grouping = 0
+    total_grouping = 1 # 0 para agrupar em 3 grupos diferentes
 
     result = SFc_means(attr_vector, k, seeds, seeds_classes, centroids, threshold, z, total_grouping)
 
     # substituindo zeros da imagem(acredito que quando o sfc-means retorna o vetor, ele tras as caracteristicas de 3 grupos diferentes: saudáveis, não saudáveis e aleatório. assim o vetor result acaba obtendo valores 0, 1 e 2, onde o valor 0 atrapalha no calculo)
     # a outra possibilidade é que o vetor é inicializado com zeros, como ocorre na classe SFc_menas.py, só que alguns zeros não são substituido
-    for i in range(len(result)):
-        if result[i] == 0:
-            result[i] = 1
+    # for i in range(len(result)):
+    #     if result[i] == 0:
+    #         result[i] = 1
 
     # cortando a parte saudável
     ht_corte = result[0:tamanho_ht]
