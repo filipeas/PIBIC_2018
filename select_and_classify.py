@@ -20,6 +20,8 @@ from skimage import img_as_ubyte
 from sklearn.metrics import accuracy_score
 from scipy.ndimage.morphology import binary_fill_holes
 from skimage.measure import label, find_contours
+from dilation_and_erosion import * # classe responsável pela erosão e dilatação
+from skimage.morphology import disk, binary_closing, binary_erosion, binary_dilation
 
 """
 <b>read_features_file</b>: Função responsável por realizar leitura do arquivo numpy que contém todas as caracteristicas
@@ -60,7 +62,14 @@ def select_random_seeds(percentage=0.3):
     tamanh_ds = len(ds)
 
     minimun = min(len(ht), len(ds))
-    absolute_limiar = round(minimun * percentage)
+    # correção: colocado o valor arredondado ou 1 para caso haja um zero
+    absolute_limiar = round(minimun * percentage) or 1
+
+    # print('minimun')
+    # print(minimun)
+    # print('absolute_limiar')
+    # print(absolute_limiar)
+    # exit()
 
     attr_vector = np.concatenate((ht, ds))
     k = 2
@@ -76,15 +85,17 @@ def select_random_seeds(percentage=0.3):
     
     threshold = 0.1
     z = 2
-    total_grouping = 1 # 0 para agrupar em 3 grupos diferentes
+    total_grouping = 0 # 0 para agrupar em 3 grupos diferentes
 
     result = SFc_means(attr_vector, k, seeds, seeds_classes, centroids, threshold, z, total_grouping)
 
+    # print(result)
+
     # substituindo zeros da imagem(acredito que quando o sfc-means retorna o vetor, ele tras as caracteristicas de 3 grupos diferentes: saudáveis, não saudáveis e aleatório. assim o vetor result acaba obtendo valores 0, 1 e 2, onde o valor 0 atrapalha no calculo)
     # a outra possibilidade é que o vetor é inicializado com zeros, como ocorre na classe SFc_menas.py, só que alguns zeros não são substituido
-    # for i in range(len(result)):
-    #     if result[i] == 0:
-    #         result[i] = 1
+    for i in range(len(result)):
+        if result[i] == 0:
+            result[i] = 1
 
     # cortando a parte saudável
     ht_corte = result[0:tamanho_ht]
@@ -99,10 +110,15 @@ def select_random_seeds(percentage=0.3):
     full_sp = np.concatenate((ht_sp, ds_sp))
     create_result_image(segments, list(zip(full_sp, result)), 'tcc_result')
 
-    result_healthy_mask = mask_result_image(segments, list(zip(ht_sp, ht_corte)), 1)
+    result_healthy_mask = mask_result_image(segments, list(zip(ht_sp, result)), 1) # acredita-se que o correto seja usando o result
     result_disease_mask = mask_result_image(segments, list(zip(ds_sp, ds_corte)), 2)
+
+
+    imsave('saved_data/result/result_healthy_mask.png', img_as_ubyte(result_healthy_mask))
+    imsave('saved_data/result/result_disease_mask.png', img_as_ubyte(result_disease_mask))
+    
     pos_processed = image_pos_processing(result_disease_mask)
-    #imsave('saved_data/result/pos_processed_mask.png', img_as_ubyte(pos_processed))
+    imsave('saved_data/result/pos_processed_mask.png', img_as_ubyte(pos_processed))
 
     tp, tn, fp, fn = calculate_confusion_matrix(disease_mark, pos_processed, healthy_mark, result_healthy_mask)
     dice = calculate_dice(disease_mark, pos_processed)
@@ -212,6 +228,8 @@ def classify(percentage=0.25):
     # cria imagem do treinamento resultante
     result_healthy.extend(result_disease)
 
+    # print(result_healthy)
+
     full_sp = np.concatenate((healthy_sp, disease_sp))
     create_result_image(segments, list(zip(full_sp, result_healthy)), 'tcc_result')
     
@@ -219,6 +237,9 @@ def classify(percentage=0.25):
     result_disease_mask = mask_result_image(segments, list(zip(disease_sp, result_disease)), 2)
     pos_processed = image_pos_processing(result_disease_mask)
     #imsave('saved_data/result/pos_processed_mask.png', img_as_ubyte(pos_processed))
+
+    imsave('saved_data/result/result_healthy_mask.png', img_as_ubyte(result_healthy_mask))
+    imsave('saved_data/result/result_disease_mask.png', img_as_ubyte(result_disease_mask))
 
     tp, tn, fp, fn = calculate_confusion_matrix(disease_mark, pos_processed, healthy_mark, result_healthy_mask)
     dice = calculate_dice(disease_mark, pos_processed)
@@ -302,7 +323,7 @@ def calculate_confusion_matrix(true_disease, predict_disease, true_healthy, pred
     return tp, tn, fp, fn
 
 """
-<b></b>:
+<b>Função responsável por calcular o DICE</b>:
 @ params:
 @ returns: 
 """
@@ -311,11 +332,19 @@ def calculate_dice(true_disease, predict_disease):
     return dice
 
 """
-<b></b>:
+<b>Função responsável por realizar pós-processamento da imagem resultante</b>:
 @ params:
 @ returns: 
 """
 def image_pos_processing(result_image):
+    # aplicando dilatação com disco maior para aumentar as áreas
+    selem = disk(25)
+    result_image = binary_dilation(result_image, selem)
+    # aplicando erosão com disco menor para arredondar a imagem final
+    selem = disk(10)
+    result_image = binary_erosion(result_image, selem)
+    imsave('saved_data/result/resultado_fechamento.png', img_as_ubyte(result_image))
+
     shape = result_image.shape
     labels = label(result_image) #get the image componentes labels 
     unique, counts = np.unique(labels, return_counts=True) #count the number of pixels in each label
@@ -331,7 +360,8 @@ def image_pos_processing(result_image):
             if labels[i][j] == sorted_labels[0]:
                 biggest_component_image[i][j] = 255
 
-    #imsave('saved_data/result/tcc_biggest_component.png', img_as_ubyte(biggest_component_image))
+    # biggest_component_image = fechamentoComAbertura(img_as_ubyte(biggest_component_image))
+    # imsave('saved_data/result/tcc_biggest_component.png', img_as_ubyte(biggest_component_image))
 
     #get the contours of all image elements
     contours = find_contours(biggest_component_image, 0.5)
@@ -343,12 +373,14 @@ def image_pos_processing(result_image):
     for i in biggest_contour:
         output[int(i[0])][int(i[1])] = 255
 
-    #imsave('saved_data/result/tcc_contour.png', img_as_ubyte(output))
+    # imsave('saved_data/result/tcc_contour.png', img_as_ubyte(output))
 
     #fill the biggest contour
     output = binary_fill_holes(output)
 
-    #imsave('saved_data/result/tcc_contour_filed.png', img_as_ubyte(output))
+    # aplicação da erosão e dilatação
+    # output = fechamentoComAbertura(img_as_ubyte(output))
+    # imsave('saved_data/result/tcc_contour_filed.png', img_as_ubyte(output))
 
     return output
 

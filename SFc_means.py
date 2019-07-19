@@ -2,8 +2,6 @@
 # author:
 # Pablo Vinicius - https://github.com/pabloVinicius
 #
-# contributors:
-# Filipe A. Sampaio - https://github.com/filipeas
 
 # imports necessários
 import numpy as np
