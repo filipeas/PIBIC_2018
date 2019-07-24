@@ -86,7 +86,7 @@ total_means = [[[],[],[],[]] for i in range(len(percentages))]
 general = open(results_path + 'general.csv', 'w')
 total_results = csv.writer(general, delimiter=',')
 total_results.writerow(['', 'Accuracy', '','Sensitivity', '', 'Specificity', '', 'Dice', ''])
-total_results.writerow(['', 'Mean', 'Standard Deviation', 'Std', '', 'Mean', 'Standard Deviation', 'Std', '', 'Mean', 'Standard Deviation', 'Std', '', 'Mean', 'Standard Deviation', 'Std'])
+total_results.writerow(['Percentage', 'Mean', 'Std', 'Mean', 'Std', 'Mean', 'Std', 'Mean', 'Std'])
 
 # Executando para cada imagem
 for image in dataset:
@@ -105,6 +105,12 @@ for image in dataset:
     results_image = open(f'results/results_{image}.csv', 'w')
     image_results = csv.writer(results_image, delimiter=',')
     image_results.writerow(['Percentage', 'Segment', 'Accuracy', 'Sensibility', 'Specificity', 'Dice', 'Standard Deviation'])
+
+    acuracy_image = open(f'results/acuracy.csv', 'w')
+    acuracy_results = csv.writer(acuracy_image, delimiter=',')
+    acuracy_results.writerow(['', 'segment 1500', 'segment 2000', 'segment 2500'])
+    acuracy_results.writerow(['percentage'])
+
 
     # iterando sobre a quantidade de segmentos de imagem para o superpixel
     for segment in qtdSegments:
@@ -136,20 +142,29 @@ for image in dataset:
                 metrics_media[2].append(spe)
                 metrics_media[3].append(dice)
 
+            # agrupando dados para o desvio padrão de todas as medidas dentro da mesma porcentagem
             desvio_padrao = []
             for i in range(len(metrics_media)):
                 for j in range(len(metrics_media[i])):
                     desvio_padrao.append(metrics_media[i][j])
 
             # Ao final das 5 execuções, escreve no arquivo .csv a média dos resultados
-            image_results.writerow([f'{percent}', f'{segment}', f'{mean(metrics_media[0]*100)}', f'{mean(metrics_media[1]*100)}', f'{mean(metrics_media[2]*100)}', f'{mean(metrics_media[3])}', f'{pvariance(desvio_padrao)}'])
+            image_results.writerow([f'{percent}', f'{segment}', f'{mean(metrics_media[0]*100)}', f'{mean(metrics_media[1]*100)}', f'{mean(metrics_media[2]*100)}', f'{mean(metrics_media[3])}', f'{np.std(desvio_padrao)}'])
 
             # Depois adiciona na estrutura de dados os dados gerais        
             total_means[index][0].append(mean(metrics_media[0])*100) # acuracia
             total_means[index][1].append(mean(metrics_media[1])*100) # sensibilidade
             total_means[index][2].append(mean(metrics_media[2])*100) # especificidade
             total_means[index][3].append(mean(metrics_media[3])) # dice
-    
+
+            if(segment == 1500):
+                acuracy_results.writerow([f'{percent}', f'{mean(metrics_media[0])*100}'])
+            elif(segment == 2000):
+                acuracy_results.writerow([f'{percent}', '', f'{mean(metrics_media[0])*100}'])
+            elif(segment == 2500):
+                acuracy_results.writerow([f'{percent}', '', '', f'{mean(metrics_media[0])*100}'])
+
+    acuracy_image.close()
     # Fecha a imagem e calcula o tempo de execução do algoritmo para a imagem atual.
     results_image.close()
     end = time.time()
@@ -157,7 +172,7 @@ for image in dataset:
 
 # Ao final da execução de todas as imagens, escreve no arquivo .csv de médias gerais, calculando-as
 for index, percent in enumerate(total_means):
-    total_results.writerow([str(percentages[index]), str(mean(percent[0])), str(pvariance(percent[0])), str(np.std(percent[0])),str(mean(percent[1])), str(pvariance(percent[1])), str(np.std(percent[1])), str(mean(percent[2])), str(pvariance(percent[2])), str(np.std(percent[2])), str(mean(percent[3])), str(pvariance(percent[3])), str(np.std(percent[3]))])
+    total_results.writerow([str(percentages[index]), str(mean(percent[0])), str(np.std(percent[0])),str(mean(percent[1])), str(np.std(percent[1])), str(mean(percent[2])), str(np.std(percent[2])), str(mean(percent[3])), str(np.std(percent[3]))])
 
 # Fecha o arquivo de médias gerais
 general.close()
