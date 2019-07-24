@@ -29,36 +29,36 @@ import numpy as np
 # imagens que irão passar pela execução do algoritmo
 dataset = [
     '1',
-    '2',
-    '3',
-    '4',
-    '5',
-    '6',
-    '7',
-    '8',
-    '9',
-    '10',
-    '11',
-    '13',
-    '14',
-    '15',
-    '16',
-    '17',
-    '18',
-    '19',
-    '20'
+    # '2',
+    # '3',
+    # '4',
+    # '5',
+    # '6',
+    # '7',
+    # '8',
+    # '9',
+    # '10',
+    # '11',
+    # '13',
+    # '14',
+    # '15',
+    # '16',
+    # '17',
+    # '18',
+    # '19',
+    # '20'
 ]
 
 # Porcentagens de dados das imagens usadas para treino.
 percentages = [
-    0.01,
-    0.05,
-    0.1,
-    0.15,
-    0.2,
-    0.25,
-    0.3,
-    0.35,
+    # 0.01,
+    # 0.05,
+    # 0.1,
+    # 0.15,
+    # 0.2,
+    # 0.25,
+    # 0.3,
+    # 0.35,
     0.4,
     0.5
 ]
@@ -67,7 +67,7 @@ percentages = [
 qtdSegments = [
     1500,
     2000,
-    2500,
+    # 2500,
     # 5000
 ]
 
@@ -110,6 +110,21 @@ for image in dataset:
     acuracy_results = csv.writer(acuracy_image, delimiter=',')
     acuracy_results.writerow(['', 'segment 1500', 'segment 2000', 'segment 2500'])
     acuracy_results.writerow(['percentage'])
+
+    sensibility_image = open(f'results/sensibility.csv', 'w')
+    sensibility_results = csv.writer(sensibility_image, delimiter=',')
+    sensibility_results.writerow(['', 'segment 1500', 'segment 2000', 'segment 2500'])
+    sensibility_results.writerow(['percentage'])
+
+    specificity_image = open(f'results/specificity.csv', 'w')
+    specificity_results = csv.writer(specificity_image, delimiter=',')
+    specificity_results.writerow(['', 'segment 1500', 'segment 2000', 'segment 2500'])
+    specificity_results.writerow(['percentage'])
+
+    dice_image = open(f'results/dice.csv', 'w')
+    dice_results = csv.writer(dice_image, delimiter=',')
+    dice_results.writerow(['', 'segment 1500', 'segment 2000', 'segment 2500'])
+    dice_results.writerow(['percentage'])
 
 
     # iterando sobre a quantidade de segmentos de imagem para o superpixel
@@ -159,12 +174,24 @@ for image in dataset:
 
             if(segment == 1500):
                 acuracy_results.writerow([f'{percent}', f'{mean(metrics_media[0])*100}'])
+                sensibility_results.writerow([f'{percent}', f'{mean(metrics_media[1])*100}'])
+                specificity_results.writerow([f'{percent}', f'{mean(metrics_media[2])*100}'])
+                dice_results.writerow([f'{percent}', f'{mean(metrics_media[3])*100}'])
             elif(segment == 2000):
                 acuracy_results.writerow([f'{percent}', '', f'{mean(metrics_media[0])*100}'])
+                sensibility_results.writerow([f'{percent}', '', f'{mean(metrics_media[1])*100}'])
+                specificity_results.writerow([f'{percent}', '', f'{mean(metrics_media[2])*100}'])
+                dice_results.writerow([f'{percent}', '', f'{mean(metrics_media[3])*100}'])
             elif(segment == 2500):
                 acuracy_results.writerow([f'{percent}', '', '', f'{mean(metrics_media[0])*100}'])
+                sensibility_results.writerow([f'{percent}', '', '', f'{mean(metrics_media[1])*100}'])
+                specificity_results.writerow([f'{percent}', '', '', f'{mean(metrics_media[2])*100}'])
+                dice_results.writerow([f'{percent}', '', '', f'{mean(metrics_media[3])*100}'])
 
     acuracy_image.close()
+    sensibility_image.close()
+    specificity_image.close()
+    dice_image.close()
     # Fecha a imagem e calcula o tempo de execução do algoritmo para a imagem atual.
     results_image.close()
     end = time.time()
