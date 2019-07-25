@@ -20,8 +20,8 @@ from skimage import img_as_ubyte
 from sklearn.metrics import accuracy_score
 from scipy.ndimage.morphology import binary_fill_holes
 from skimage.measure import label, find_contours
-from dilation_and_erosion import * # classe responsável pela erosão e dilatação
-from skimage.morphology import disk, binary_closing, binary_erosion, binary_dilation
+# from dilation_and_erosion import *
+from skimage.morphology import disk, binary_closing, binary_erosion, binary_dilation  # classe responsável pela erosão e dilatação
 
 """
 <b>read_features_file</b>: Função responsável por realizar leitura do arquivo numpy que contém todas as caracteristicas

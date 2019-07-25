@@ -29,36 +29,36 @@ import numpy as np
 # imagens que irão passar pela execução do algoritmo
 dataset = [
     '1',
-    # '2',
-    # '3',
-    # '4',
-    # '5',
-    # '6',
-    # '7',
-    # '8',
-    # '9',
-    # '10',
-    # '11',
-    # '13',
-    # '14',
-    # '15',
-    # '16',
-    # '17',
-    # '18',
-    # '19',
-    # '20'
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '10',
+    '11',
+    '13',
+    '14',
+    '15',
+    '16',
+    '17',
+    '18',
+    '19',
+    '20'
 ]
 
 # Porcentagens de dados das imagens usadas para treino.
 percentages = [
-    # 0.01,
-    # 0.05,
-    # 0.1,
-    # 0.15,
-    # 0.2,
-    # 0.25,
-    # 0.3,
-    # 0.35,
+    0.01,
+    0.05,
+    0.1,
+    0.15,
+    0.2,
+    0.25,
+    0.3,
+    0.35,
     0.4,
     0.5
 ]
@@ -67,7 +67,7 @@ percentages = [
 qtdSegments = [
     1500,
     2000,
-    # 2500,
+    2500,
     # 5000
 ]
 
@@ -88,6 +88,38 @@ total_results = csv.writer(general, delimiter=',')
 total_results.writerow(['', 'Accuracy', '','Sensitivity', '', 'Specificity', '', 'Dice', ''])
 total_results.writerow(['Percentage', 'Mean', 'Std', 'Mean', 'Std', 'Mean', 'Std', 'Mean', 'Std'])
 
+# grafico das acuracias
+acuracy_image = open(f'results/acuracy.csv', 'w')
+acuracy_results = csv.writer(acuracy_image, delimiter=',')
+acuracy_results.writerow(['', 'segment 1500', 'segment 2000', 'segment 2500'])
+acuracy_results.writerow(['percentage'])
+# instanciando variavel pra guardar todas as acuracias da imagem corrente
+acuracia_corrent = [[[],[],[]] for i in range(len(percentages))]
+
+# grafico das sensibilidade
+sensibility_image = open(f'results/sensibility.csv', 'w')
+sensibility_results = csv.writer(sensibility_image, delimiter=',')
+sensibility_results.writerow(['', 'segment 1500', 'segment 2000', 'segment 2500'])
+sensibility_results.writerow(['percentage'])
+# instanciando variavel pra guardar todas as sensibilidade da imagem corrente
+sensibilidade_corrent = [[[],[],[]] for i in range(len(percentages))]
+
+# grafico das especificidade
+specificity_image = open(f'results/specificity.csv', 'w')
+specificity_results = csv.writer(specificity_image, delimiter=',')
+specificity_results.writerow(['', 'segment 1500', 'segment 2000', 'segment 2500'])
+specificity_results.writerow(['percentage'])
+# instanciando variavel pra guardar todas as especificidade da imagem corrente
+especificidade_corrent = [[[],[],[]] for i in range(len(percentages))]
+
+# grafico das dice
+dice_image = open(f'results/dice.csv', 'w')
+dice_results = csv.writer(dice_image, delimiter=',')
+dice_results.writerow(['', 'segment 1500', 'segment 2000', 'segment 2500'])
+dice_results.writerow(['percentage'])
+# instanciando variavel pra guardar todas as dice da imagem corrente
+dice_corrent = [[[],[],[]] for i in range(len(percentages))]
+
 # Executando para cada imagem
 for image in dataset:
     print(f'\n\n########### Executando a imagem {image} ############\n\n')
@@ -105,27 +137,6 @@ for image in dataset:
     results_image = open(f'results/results_{image}.csv', 'w')
     image_results = csv.writer(results_image, delimiter=',')
     image_results.writerow(['Percentage', 'Segment', 'Accuracy', 'Sensibility', 'Specificity', 'Dice', 'Standard Deviation'])
-
-    acuracy_image = open(f'results/acuracy.csv', 'w')
-    acuracy_results = csv.writer(acuracy_image, delimiter=',')
-    acuracy_results.writerow(['', 'segment 1500', 'segment 2000', 'segment 2500'])
-    acuracy_results.writerow(['percentage'])
-
-    sensibility_image = open(f'results/sensibility.csv', 'w')
-    sensibility_results = csv.writer(sensibility_image, delimiter=',')
-    sensibility_results.writerow(['', 'segment 1500', 'segment 2000', 'segment 2500'])
-    sensibility_results.writerow(['percentage'])
-
-    specificity_image = open(f'results/specificity.csv', 'w')
-    specificity_results = csv.writer(specificity_image, delimiter=',')
-    specificity_results.writerow(['', 'segment 1500', 'segment 2000', 'segment 2500'])
-    specificity_results.writerow(['percentage'])
-
-    dice_image = open(f'results/dice.csv', 'w')
-    dice_results = csv.writer(dice_image, delimiter=',')
-    dice_results.writerow(['', 'segment 1500', 'segment 2000', 'segment 2500'])
-    dice_results.writerow(['percentage'])
-
 
     # iterando sobre a quantidade de segmentos de imagem para o superpixel
     for segment in qtdSegments:
@@ -173,29 +184,49 @@ for image in dataset:
             total_means[index][3].append(mean(metrics_media[3])) # dice
 
             if(segment == 1500):
-                acuracy_results.writerow([f'{percent}', f'{mean(metrics_media[0])*100}'])
-                sensibility_results.writerow([f'{percent}', f'{mean(metrics_media[1])*100}'])
-                specificity_results.writerow([f'{percent}', f'{mean(metrics_media[2])*100}'])
-                dice_results.writerow([f'{percent}', f'{mean(metrics_media[3])*100}'])
+                acuracia_corrent[index][0].append(mean(metrics_media[0])*100)
+                sensibilidade_corrent[index][0].append(mean(metrics_media[1])*100)
+                especificidade_corrent[index][0].append(mean(metrics_media[2])*100)
+                dice_corrent[index][0].append(mean(metrics_media[3])*100)
             elif(segment == 2000):
-                acuracy_results.writerow([f'{percent}', '', f'{mean(metrics_media[0])*100}'])
-                sensibility_results.writerow([f'{percent}', '', f'{mean(metrics_media[1])*100}'])
-                specificity_results.writerow([f'{percent}', '', f'{mean(metrics_media[2])*100}'])
-                dice_results.writerow([f'{percent}', '', f'{mean(metrics_media[3])*100}'])
+                acuracia_corrent[index][1].append(mean(metrics_media[0])*100)
+                sensibilidade_corrent[index][1].append(mean(metrics_media[1])*100)
+                especificidade_corrent[index][1].append(mean(metrics_media[2])*100)
+                dice_corrent[index][1].append(mean(metrics_media[3])*100)
             elif(segment == 2500):
-                acuracy_results.writerow([f'{percent}', '', '', f'{mean(metrics_media[0])*100}'])
-                sensibility_results.writerow([f'{percent}', '', '', f'{mean(metrics_media[1])*100}'])
-                specificity_results.writerow([f'{percent}', '', '', f'{mean(metrics_media[2])*100}'])
-                dice_results.writerow([f'{percent}', '', '', f'{mean(metrics_media[3])*100}'])
+                acuracia_corrent[index][2].append(mean(metrics_media[0])*100)
+                sensibilidade_corrent[index][2].append(mean(metrics_media[1])*100)
+                especificidade_corrent[index][2].append(mean(metrics_media[2])*100)
+                dice_corrent[index][2].append(mean(metrics_media[3])*100)
 
-    acuracy_image.close()
-    sensibility_image.close()
-    specificity_image.close()
-    dice_image.close()
     # Fecha a imagem e calcula o tempo de execução do algoritmo para a imagem atual.
     results_image.close()
     end = time.time()
     print(f'\n\n########### Fim da execucao da imagem {image} no tempo de {end-start} segundos ############\n\n')
+
+#gerando grafico das acuracias
+for index, percent in enumerate(acuracia_corrent):
+    acuracy_results.writerow([f'{percentages[index]}', str("-" if len(percent[0]) == 0 else mean(percent[0])), str("-" if len(percent[1]) == 0 else mean(percent[1])), str("-" if len(percent[2]) == 0 else mean(percent[2]))])
+# fechando acuracia
+acuracy_image.close()
+
+#gerando grafico das sensibilidade
+for index, percent in enumerate(sensibilidade_corrent):
+    sensibility_results.writerow([f'{percentages[index]}', str("-" if len(percent[0]) == 0 else mean(percent[0])), str("-" if len(percent[1]) == 0 else mean(percent[1])), str("-" if len(percent[2]) == 0 else mean(percent[2]))])
+# fechando acuracia
+sensibility_image.close()
+
+#gerando grafico das especificidade
+for index, percent in enumerate(especificidade_corrent):
+    specificity_results.writerow([f'{percentages[index]}', str("-" if len(percent[0]) == 0 else mean(percent[0])), str("-" if len(percent[1]) == 0 else mean(percent[1])), str("-" if len(percent[2]) == 0 else mean(percent[2]))])
+# fechando acuracia
+specificity_image.close()
+
+#gerando grafico das dice
+for index, percent in enumerate(dice_corrent):
+    dice_results.writerow([f'{percentages[index]}', str("-" if len(percent[0]) == 0 else mean(percent[0])), str("-" if len(percent[1]) == 0 else mean(percent[1])), str("-" if len(percent[2]) == 0 else mean(percent[2]))])
+# fechando acuracia
+dice_image.close()
 
 # Ao final da execução de todas as imagens, escreve no arquivo .csv de médias gerais, calculando-as
 for index, percent in enumerate(total_means):
