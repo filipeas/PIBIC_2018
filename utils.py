@@ -86,6 +86,13 @@ def select_superpixels(segments, healthy_mask, disease_mask):
     
     return final_ht_segments, final_ds_segments
 
+"""
+Função responsável por criar uma imagem resultante da classificação. Essa imagem é gerada antes do pós processamento.
+Parametros:
+segmentos da imagem;
+lista zipada com as classes, que são a lesão e a não lesão;
+nome do arquivo que será gerado. por padrão se chamará tst
+"""
 def create_result_image(segments, classes, name='tst'):
     shape = segments.shape
     result = np.zeros((shape[0], shape[1], 3), dtype=int)
@@ -95,15 +102,48 @@ def create_result_image(segments, classes, name='tst'):
 
     for i in range(shape[0]):
         for j in range(shape[1]):
-            if segments[i][j] in ones:
+            if segments[i][j] in ones: # para a classe 1 será colocado pixels com cor verde
                 result[i][j][2] = 0
                 result[i][j][1] = 255
-            elif segments[i][j] in twos:
+            elif segments[i][j] in twos: # para a classe 2 será colocado pixels com cor vermelho
                 result[i][j][2] = 0
                 result[i][j][0] = 255
 
     imsave('saved_data/result/' + name + '.png', img_as_ubyte(result))
 
+"""
+Função responsável por criar uma imagem resultante da classificação, onde essa imagem será terá apenas o fundo verde da classe saudável.
+Ela será usada na função override_ask, que irá adicionar a imagem da lesão.
+Parametros:
+segmentos da imagem;
+lista zipada com as classes, que são a lesão e a não lesão;
+nome do arquivo que será gerado. por padrão se chamará tst2
+"""
+def create_result_image_pos_processing(segments, classes, name='tst2'):
+    shape = segments.shape
+    result = np.zeros((shape[0], shape[1], 3), dtype=int)
+    result[:,:,2].fill(255)
+    ones = [i[0] for i in classes if i[1] == 1]
+    twos = [i[0] for i in classes if i[1] == 2]
+
+    for i in range(shape[0]):
+        for j in range(shape[1]):
+            if segments[i][j] in ones:# para a classe 1 será colocado pixels com cor verde
+                result[i][j][2] = 0
+                result[i][j][1] = 255
+            elif segments[i][j] in twos:# para a classe 1 será colocado pixels com cor verde
+                result[i][j][2] = 0
+                result[i][j][1] = 255
+
+    imsave('saved_data/result/' + name + '.png', img_as_ubyte(result))
+
+"""
+Função responsável por gerar uma imagem do treino da imagem.
+Parametros:
+segmentos da imagem;
+lista zipada com as classes, que são a lesão e a não lesão;
+nome do arquivo que será gerado. por padrão se chamará tst2
+"""
 def tcc_train_image(segments, classes, name='tst'):
     shape = segments.shape
     result = img_as_ubyte(imread('saved_data/superpixels.png'))
@@ -148,6 +188,25 @@ def mask_result_image(segments, classes, true_value):
         for j in range(shape[1]):
             if segments[i][j] in selecteds:
                 result[i][j] = 255
+
+    return result
+
+"""
+Função responsável por adicionar a imagem da lesão em cima da imagem do fundo do olho.
+Parametros:
+imagem original;
+imagem da mascara da lesao;
+"""
+def override_mask(original, mask):
+    shape = original.shape
+    result = original
+
+    for i in range(shape[0]):
+        for j in range(shape[1]):
+            if mask[i][j]: # onde for pixels que representa a lesão, na imagem final será representada como cor vermelha;
+                result[i][j][0] = 255
+                result[i][j][1] = 0
+                result[i][j][2] = 0
 
     return result
 

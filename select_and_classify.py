@@ -238,6 +238,12 @@ def classify(percentage=0.25):
     pos_processed = image_pos_processing(result_disease_mask)
     #imsave('saved_data/result/pos_processed_mask.png', img_as_ubyte(pos_processed))
 
+    # gerando imagem do pós processamento
+    create_result_image_pos_processing(segments, list(zip(full_sp, result_healthy)), 'fundo_sem_lesao')
+    img_original = img_as_ubyte(imread('saved_data/result/fundo_sem_lesao.png'))
+    overrided = override_mask(img_original, pos_processed)
+    imsave('saved_data/result/override_pos_processing.png', img_as_ubyte(overrided))
+
     imsave('saved_data/result/result_healthy_mask.png', img_as_ubyte(result_healthy_mask))
     imsave('saved_data/result/result_disease_mask.png', img_as_ubyte(result_disease_mask))
 

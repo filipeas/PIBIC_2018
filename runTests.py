@@ -29,36 +29,36 @@ import numpy as np
 # imagens que irão passar pela execução do algoritmo
 dataset = [
     '1',
-    '2',
-    '3',
-    '4',
-    '5',
-    '6',
-    '7',
-    '8',
-    '9',
-    '10',
-    '11',
-    '13',
-    '14',
-    '15',
-    '16',
-    '17',
-    '18',
-    '19',
-    '20'
+    # '2',
+    # '3',
+    # '4',
+    # '5',
+    # '6',
+    # '7',
+    # '8',
+    # '9',
+    # '10',
+    # '11',
+    # '13',
+    # '14',
+    # '15',
+    # '16',
+    # '17',
+    # '18',
+    # '19',
+    # '20'
 ]
 
 # Porcentagens de dados das imagens usadas para treino.
 percentages = [
-    0.01,
-    0.05,
-    0.1,
-    0.15,
-    0.2,
-    0.25,
-    0.3,
-    0.35,
+    # 0.01,
+    # 0.05,
+    # 0.1,
+    # 0.15,
+    # 0.2,
+    # 0.25,
+    # 0.3,
+    # 0.35,
     0.4,
     0.5
 ]
@@ -66,8 +66,8 @@ percentages = [
 # Quantidade de segmentos para o superpixel
 qtdSegments = [
     1500,
-    2000,
-    2500,
+    # 2000,
+    # 2500,
     # 5000
 ]
 
