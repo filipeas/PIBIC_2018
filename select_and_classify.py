@@ -113,12 +113,20 @@ def select_random_seeds(percentage=0.3):
     result_healthy_mask = mask_result_image(segments, list(zip(ht_sp, result)), 1) # acredita-se que o correto seja usando o result
     result_disease_mask = mask_result_image(segments, list(zip(ds_sp, ds_corte)), 2)
 
-
     imsave('saved_data/result/result_healthy_mask.png', img_as_ubyte(result_healthy_mask))
     imsave('saved_data/result/result_disease_mask.png', img_as_ubyte(result_disease_mask))
     
     pos_processed = image_pos_processing(result_disease_mask)
     imsave('saved_data/result/pos_processed_mask.png', img_as_ubyte(pos_processed))
+
+    # gerando imagem do pós processamento
+    create_result_image_pos_processing(segments, list(zip(full_sp, result)), 'fundo_sem_lesao')
+    img_original = img_as_ubyte(imread('saved_data/result/fundo_sem_lesao.png'))
+    overrided = override_mask(img_original, pos_processed)
+    imsave('saved_data/result/override_pos_processing.png', img_as_ubyte(overrided))
+
+    imsave('saved_data/result/result_healthy_mask.png', img_as_ubyte(result_healthy_mask))
+    imsave('saved_data/result/result_disease_mask.png', img_as_ubyte(result_disease_mask))
 
     tp, tn, fp, fn = calculate_confusion_matrix(disease_mark, pos_processed, healthy_mark, result_healthy_mask)
     dice = calculate_dice(disease_mark, pos_processed)
@@ -367,7 +375,7 @@ def image_pos_processing(result_image):
                 biggest_component_image[i][j] = 255
 
     # biggest_component_image = fechamentoComAbertura(img_as_ubyte(biggest_component_image))
-    # imsave('saved_data/result/tcc_biggest_component.png', img_as_ubyte(biggest_component_image))
+    imsave('saved_data/result/tcc_biggest_component.png', img_as_ubyte(biggest_component_image))
 
     #get the contours of all image elements
     contours = find_contours(biggest_component_image, 0.5)
@@ -379,14 +387,14 @@ def image_pos_processing(result_image):
     for i in biggest_contour:
         output[int(i[0])][int(i[1])] = 255
 
-    # imsave('saved_data/result/tcc_contour.png', img_as_ubyte(output))
+    imsave('saved_data/result/tcc_contour.png', img_as_ubyte(output))
 
     #fill the biggest contour
     output = binary_fill_holes(output)
 
     # aplicação da erosão e dilatação
     # output = fechamentoComAbertura(img_as_ubyte(output))
-    # imsave('saved_data/result/tcc_contour_filed.png', img_as_ubyte(output))
+    imsave('saved_data/result/tcc_contour_filed.png', img_as_ubyte(output))
 
     return output
 

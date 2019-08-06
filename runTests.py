@@ -59,15 +59,17 @@ percentages = [
     # 0.25,
     # 0.3,
     # 0.35,
-    0.4,
-    0.5
+    # 0.4,
+    # 0.5
 ]
 
 # Quantidade de segmentos para o superpixel
 qtdSegments = [
-    1500,
+    # 1500,
     # 2000,
     # 2500,
+    # 3000,
+    # 4000,
     # 5000
 ]
 
@@ -91,34 +93,34 @@ total_results.writerow(['Percentage', 'Mean', 'Std', 'Mean', 'Std', 'Mean', 'Std
 # grafico das acuracias
 acuracy_image = open(f'results/acuracy.csv', 'w')
 acuracy_results = csv.writer(acuracy_image, delimiter=',')
-acuracy_results.writerow(['', 'segment 1500', 'segment 2000', 'segment 2500'])
+acuracy_results.writerow(['', 'segment 1500', 'segment 2000', 'segment 2500', 'segment 3000', 'segment 4000', 'std 1500', 'std 2000', 'std 2500', 'std 3000', 'std 4000'])
 acuracy_results.writerow(['percentage'])
 # instanciando variavel pra guardar todas as acuracias da imagem corrente
-acuracia_corrent = [[[],[],[]] for i in range(len(percentages))]
+acuracia_corrent = [[[],[],[],[],[]] for i in range(len(percentages))]
 
 # grafico das sensibilidade
 sensibility_image = open(f'results/sensibility.csv', 'w')
 sensibility_results = csv.writer(sensibility_image, delimiter=',')
-sensibility_results.writerow(['', 'segment 1500', 'segment 2000', 'segment 2500'])
+sensibility_results.writerow(['', 'segment 1500', 'segment 2000', 'segment 2500', 'segment 3000', 'segment 4000', 'std 1500', 'std 2000', 'std 2500', 'std 3000', 'std 4000'])
 sensibility_results.writerow(['percentage'])
 # instanciando variavel pra guardar todas as sensibilidade da imagem corrente
-sensibilidade_corrent = [[[],[],[]] for i in range(len(percentages))]
+sensibilidade_corrent = [[[],[],[],[],[]] for i in range(len(percentages))]
 
 # grafico das especificidade
 specificity_image = open(f'results/specificity.csv', 'w')
 specificity_results = csv.writer(specificity_image, delimiter=',')
-specificity_results.writerow(['', 'segment 1500', 'segment 2000', 'segment 2500'])
+specificity_results.writerow(['', 'segment 1500', 'segment 2000', 'segment 2500', 'segment 3000', 'segment 4000', 'std 1500', 'std 2000', 'std 2500', 'std 3000', 'std 4000'])
 specificity_results.writerow(['percentage'])
 # instanciando variavel pra guardar todas as especificidade da imagem corrente
-especificidade_corrent = [[[],[],[]] for i in range(len(percentages))]
+especificidade_corrent = [[[],[],[],[],[]] for i in range(len(percentages))]
 
 # grafico das dice
 dice_image = open(f'results/dice.csv', 'w')
 dice_results = csv.writer(dice_image, delimiter=',')
-dice_results.writerow(['', 'segment 1500', 'segment 2000', 'segment 2500'])
+dice_results.writerow(['', 'segment 1500', 'segment 2000', 'segment 2500', 'segment 3000', 'segment 4000', 'std 1500', 'std 2000', 'std 2500', 'std 3000', 'std 4000'])
 dice_results.writerow(['percentage'])
 # instanciando variavel pra guardar todas as dice da imagem corrente
-dice_corrent = [[[],[],[]] for i in range(len(percentages))]
+dice_corrent = [[[],[],[],[],[]] for i in range(len(percentages))]
 
 # Executando para cada imagem
 for image in dataset:
@@ -136,7 +138,7 @@ for image in dataset:
     # Escreve apenas o cabeçalho, por enquanto.
     results_image = open(f'results/results_{image}.csv', 'w')
     image_results = csv.writer(results_image, delimiter=',')
-    image_results.writerow(['Percentage', 'Segment', 'Accuracy', 'Sensibility', 'Specificity', 'Dice', 'Standard Deviation'])
+    image_results.writerow(['Percentage', 'Segment', 'Accuracy', 'Sensibility', 'Specificity', 'Dice'])
 
     # iterando sobre a quantidade de segmentos de imagem para o superpixel
     for segment in qtdSegments:
@@ -168,14 +170,8 @@ for image in dataset:
                 metrics_media[2].append(spe)
                 metrics_media[3].append(dice)
 
-            # agrupando dados para o desvio padrão de todas as medidas dentro da mesma porcentagem
-            desvio_padrao = []
-            for i in range(len(metrics_media)):
-                for j in range(len(metrics_media[i])):
-                    desvio_padrao.append(metrics_media[i][j])
-
             # Ao final das 5 execuções, escreve no arquivo .csv a média dos resultados
-            image_results.writerow([f'{percent}', f'{segment}', f'{mean(metrics_media[0]*100)}', f'{mean(metrics_media[1]*100)}', f'{mean(metrics_media[2]*100)}', f'{mean(metrics_media[3])}', f'{np.std(desvio_padrao)}'])
+            image_results.writerow([f'{percent}', f'{segment}', f'{mean(metrics_media[0]*100)}', f'{mean(metrics_media[1]*100)}', f'{mean(metrics_media[2]*100)}', f'{mean(metrics_media[3])}'])
 
             # Depois adiciona na estrutura de dados os dados gerais        
             total_means[index][0].append(mean(metrics_media[0])*100) # acuracia
@@ -198,6 +194,16 @@ for image in dataset:
                 sensibilidade_corrent[index][2].append(mean(metrics_media[1])*100)
                 especificidade_corrent[index][2].append(mean(metrics_media[2])*100)
                 dice_corrent[index][2].append(mean(metrics_media[3])*100)
+            elif(segment == 3000):
+                acuracia_corrent[index][3].append(mean(metrics_media[0])*100)
+                sensibilidade_corrent[index][3].append(mean(metrics_media[1])*100)
+                especificidade_corrent[index][3].append(mean(metrics_media[2])*100)
+                dice_corrent[index][3].append(mean(metrics_media[3])*100)
+            elif(segment == 4000):
+                acuracia_corrent[index][4].append(mean(metrics_media[0])*100)
+                sensibilidade_corrent[index][4].append(mean(metrics_media[1])*100)
+                especificidade_corrent[index][4].append(mean(metrics_media[2])*100)
+                dice_corrent[index][4].append(mean(metrics_media[3])*100)
 
     # Fecha a imagem e calcula o tempo de execução do algoritmo para a imagem atual.
     results_image.close()
@@ -206,30 +212,32 @@ for image in dataset:
 
 #gerando grafico das acuracias
 for index, percent in enumerate(acuracia_corrent):
-    acuracy_results.writerow([f'{percentages[index]}', str("-" if len(percent[0]) == 0 else mean(percent[0])), str("-" if len(percent[1]) == 0 else mean(percent[1])), str("-" if len(percent[2]) == 0 else mean(percent[2]))])
+    acuracy_results.writerow([f'{percentages[index]}', str("-" if len(percent[0]) == 0 else mean(percent[0])), str("-" if len(percent[1]) == 0 else mean(percent[1])), str("-" if len(percent[2]) == 0 else mean(percent[2])), str("-" if len(percent[3]) == 0 else mean(percent[3])), str("-" if len(percent[4]) == 0 else mean(percent[4])), str("-" if len(percent[0]) == 0 else np.std(percent[0])), str("-" if len(percent[1]) == 0 else np.std(percent[1])), str("-" if len(percent[2]) == 0 else np.std(percent[2])), str("-" if len(percent[3]) == 0 else np.std(percent[3])), str("-" if len(percent[4]) == 0 else np.std(percent[4]))])
 # fechando acuracia
 acuracy_image.close()
 
 #gerando grafico das sensibilidade
 for index, percent in enumerate(sensibilidade_corrent):
-    sensibility_results.writerow([f'{percentages[index]}', str("-" if len(percent[0]) == 0 else mean(percent[0])), str("-" if len(percent[1]) == 0 else mean(percent[1])), str("-" if len(percent[2]) == 0 else mean(percent[2]))])
+    sensibility_results.writerow([f'{percentages[index]}', str("-" if len(percent[0]) == 0 else mean(percent[0])), str("-" if len(percent[1]) == 0 else mean(percent[1])), str("-" if len(percent[2]) == 0 else mean(percent[2])), str("-" if len(percent[3]) == 0 else mean(percent[3])), str("-" if len(percent[4]) == 0 else mean(percent[4])), str("-" if len(percent[0]) == 0 else np.std(percent[0])), str("-" if len(percent[1]) == 0 else np.std(percent[1])), str("-" if len(percent[2]) == 0 else np.std(percent[2])), str("-" if len(percent[3]) == 0 else np.std(percent[3])), str("-" if len(percent[4]) == 0 else np.std(percent[4]))])
 # fechando acuracia
 sensibility_image.close()
 
 #gerando grafico das especificidade
 for index, percent in enumerate(especificidade_corrent):
-    specificity_results.writerow([f'{percentages[index]}', str("-" if len(percent[0]) == 0 else mean(percent[0])), str("-" if len(percent[1]) == 0 else mean(percent[1])), str("-" if len(percent[2]) == 0 else mean(percent[2]))])
+    specificity_results.writerow([f'{percentages[index]}', str("-" if len(percent[0]) == 0 else mean(percent[0])), str("-" if len(percent[1]) == 0 else mean(percent[1])), str("-" if len(percent[2]) == 0 else mean(percent[2])), str("-" if len(percent[3]) == 0 else mean(percent[3])), str("-" if len(percent[4]) == 0 else mean(percent[4])), str("-" if len(percent[0]) == 0 else np.std(percent[0])), str("-" if len(percent[1]) == 0 else np.std(percent[1])), str("-" if len(percent[2]) == 0 else np.std(percent[2])), str("-" if len(percent[3]) == 0 else np.std(percent[3])), str("-" if len(percent[4]) == 0 else np.std(percent[4]))])
 # fechando acuracia
 specificity_image.close()
 
 #gerando grafico das dice
 for index, percent in enumerate(dice_corrent):
-    dice_results.writerow([f'{percentages[index]}', str("-" if len(percent[0]) == 0 else mean(percent[0])), str("-" if len(percent[1]) == 0 else mean(percent[1])), str("-" if len(percent[2]) == 0 else mean(percent[2]))])
+    dice_results.writerow([f'{percentages[index]}', str("-" if len(percent[0]) == 0 else mean(percent[0])), str("-" if len(percent[1]) == 0 else mean(percent[1])), str("-" if len(percent[2]) == 0 else mean(percent[2])), str("-" if len(percent[3]) == 0 else mean(percent[3])), str("-" if len(percent[4]) == 0 else mean(percent[4])), str("-" if len(percent[0]) == 0 else np.std(percent[0])), str("-" if len(percent[1]) == 0 else np.std(percent[1])), str("-" if len(percent[2]) == 0 else np.std(percent[2])), str("-" if len(percent[3]) == 0 else np.std(percent[3])), str("-" if len(percent[4]) == 0 else np.std(percent[4]))])
 # fechando acuracia
 dice_image.close()
 
 # Ao final da execução de todas as imagens, escreve no arquivo .csv de médias gerais, calculando-as
 for index, percent in enumerate(total_means):
+    print("teste: todas as acuracias")
+    print(percent[0])
     total_results.writerow([str(percentages[index]), str(mean(percent[0])), str(np.std(percent[0])),str(mean(percent[1])), str(np.std(percent[1])), str(mean(percent[2])), str(np.std(percent[2])), str(mean(percent[3])), str(np.std(percent[3]))])
 
 # Fecha o arquivo de médias gerais
