@@ -174,7 +174,7 @@ def classify(percentage=0.25):
 
     train_set_data = np.asarray(train_set_data)
     train_ground_truth = np.asarray(train_ground_truth)
-    """ 
+    
     #gera imagem que representa como foi o dataset de treino 
     #isso foi usado apenas para gerar imagens para os artigos
     #generating train image
@@ -190,7 +190,7 @@ def classify(percentage=0.25):
     full_sp = np.concatenate((healthy_sp, disease_sp))
     #create_result_image(segments, list(zip(full_sp, result_healthy)), 'train_image')
     tcc_train_image(segments, list(zip(full_sp, result_healthy)), 'train_image')
-    """ 
+    
     # sfcmeans = select_random_seeds(percentage) # usando SFc-means
 
     # print("teste com sfcmeans")

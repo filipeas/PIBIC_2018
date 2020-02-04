@@ -1,5 +1,9 @@
-TCC_MAIN_METHOD
+PIBIC 2019
 =====
+
+* Este projeto tem como objetivo atender as seguintes metas:
+1. adicionar nova base de dados para testes (+10. agora tempo 30 imagens, entre elas imagens com corante);
+2. deve ser feito manipulações sobre o limiar no SFc-means, baseado no trabalho de Luís Santos;
 
 ---
 Autor:

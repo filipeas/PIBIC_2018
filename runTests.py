@@ -28,7 +28,7 @@ import numpy as np
 
 # imagens que irão passar pela execução do algoritmo
 dataset = [
-    '1',
+    # '1',
     # '2',
     # '3',
     # '4',
@@ -46,7 +46,17 @@ dataset = [
     # '17',
     # '18',
     # '19',
-    # '20'
+    # '20',
+    # '21',
+    # '22',
+    # '23',
+    # '24',
+    # '25',
+    # '26',
+    # '27',
+    # '28',
+    # '29',
+    '30'
 ]
 
 # Porcentagens de dados das imagens usadas para treino.
@@ -60,12 +70,12 @@ percentages = [
     # 0.3,
     # 0.35,
     # 0.4,
-    # 0.5
+    0.5
 ]
 
 # Quantidade de segmentos para o superpixel
 qtdSegments = [
-    # 1500,
+    1500,
     # 2000,
     # 2500,
     # 3000,
@@ -236,8 +246,8 @@ dice_image.close()
 
 # Ao final da execução de todas as imagens, escreve no arquivo .csv de médias gerais, calculando-as
 for index, percent in enumerate(total_means):
-    print("teste: todas as acuracias")
-    print(percent[0])
+    # print("teste: todas as acuracias")
+    # print(percent[0])
     total_results.writerow([str(percentages[index]), str(mean(percent[0])), str(np.std(percent[0])),str(mean(percent[1])), str(np.std(percent[1])), str(mean(percent[2])), str(np.std(percent[2])), str(mean(percent[3])), str(np.std(percent[3]))])
 
 # Fecha o arquivo de médias gerais

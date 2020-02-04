@@ -1,0 +1,3 @@
+,Accuracy,,Sensitivity,,Specificity,,Dice,
+Percentage,Mean,Std,Mean,Std,Mean,Std,Mean,Std
+0.5,93.97446717303649,0.0,98.71553822708651,0.0,90.01420832963325,0.0,0.8449029372903751,0.0
