@@ -41,8 +41,8 @@ def vsf(path, path_marked, segment):
     healthy_superpixels, disease_superpixels = select_superpixels(segments, healthy, disease)
 
     #cria duas filas para executar o procedimento em paralelo
-    """ pool_ht = mp.Pool(2)
-    pool_ds = mp.Pool(2) """
+    """pool_ht = mp.Pool(4)
+    pool_ds = mp.Pool(4)"""
 
     # Gera as entradas para as filas de execução
     ht_inputs = [(img_original, segments, i) for i in healthy_superpixels]
@@ -52,8 +52,8 @@ def vsf(path, path_marked, segment):
     # Executa a função extract_superpixel(disponível no arquivo superpixels_extraction.py) para cada superpixel
     # a função recebe a numeração de um superpixel e retorna uma imagem que corresponde à area daquele superpixel
     # (para execução em procedimento paralelo)
-    """ healthy_boxes = pool_ht.map(extract_superpixel, ht_inputs)
-    disease_boxes = pool_ds.map(extract_superpixel, ds_inputs) """
+    """healthy_boxes = pool_ht.map(extract_superpixel, ht_inputs)
+    disease_boxes = pool_ds.map(extract_superpixel, ds_inputs)"""
     # (para execução linear)
     healthy_boxes = list(map(extract_superpixel, ht_inputs))
     disease_boxes = list(map(extract_superpixel, ds_inputs))

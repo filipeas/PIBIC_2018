@@ -50,7 +50,7 @@ Recomendo utilizar um gerenciador de ambiente virtual python, preferencialmente 
 2. Execute seu ambiente virtual
 
     ```shell
-    > source activate modeloPython
+    > (source ou conda para linux) activate modeloPython
     ```
 
 3. Instale os pacotes necessários (ao usar os dois comandos abaixo, o conda já irá instalar uma série de outros pacotes necessários)

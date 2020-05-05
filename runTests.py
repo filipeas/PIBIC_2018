@@ -28,7 +28,7 @@ import numpy as np
 
 # imagens que irão passar pela execução do algoritmo
 dataset = [
-    # '1',
+    '1',
     # '2',
     # '3',
     # '4',
@@ -56,7 +56,7 @@ dataset = [
     # '27',
     # '28',
     # '29',
-    '30'
+    # '30'
 ]
 
 # Porcentagens de dados das imagens usadas para treino.
@@ -66,11 +66,11 @@ percentages = [
     # 0.1,
     # 0.15,
     # 0.2,
-    # 0.25,
+    0.25,
     # 0.3,
     # 0.35,
     # 0.4,
-    0.5
+    # 0.5
 ]
 
 # Quantidade de segmentos para o superpixel
@@ -172,7 +172,7 @@ for image in dataset:
                 # Usa as características extraídas na etapa anterior para classificar e gerar as métricas para cada imagem
                 # Disponível no arquivo select_and_classify.py
                 # acc, sen, spe, dice = classify(percent) # classificação por Random Forest
-                acc, sen, spe, dice = select_random_seeds(percent) # classificação por sfc-means
+                acc, sen, spe, dice = select_random_seeds(image, percent) # classificação por sfc-means
 
                 # Coloca as métricas na estrutura de dados
                 metrics_media[0].append(acc)
